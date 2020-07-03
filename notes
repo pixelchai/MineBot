@@ -17,3 +17,9 @@ Decision after trying out the above options:
          + more complicated setup (needs dev tools, whereas with Forge, can just distribute the mod jar file or whatever)
          Though NB: using Forge would mean I gotta do it in Java whereas with Malmo I could use Python
          Oh well let's try out some good ol Java
+
+Minecraft modding:
+Considered both Fabric and Forge
+Fabric seems cool + more lightweight apparently so it seems better for my use case in that regard (since I'm not making a full on mod [adding stuff to the game, etc])
+but honestly I just need some way to interact with MC's internal data structures like position, world stuff, etc and both seem to have an almost identical API for that (from what I have briefly seen)
+Forge looks like it has better documentation and stuff and since this is my first MC mod, I'll just go with that I think
