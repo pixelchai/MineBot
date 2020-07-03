@@ -23,3 +23,9 @@ Considered both Fabric and Forge
 Fabric seems cool + more lightweight apparently so it seems better for my use case in that regard (since I'm not making a full on mod [adding stuff to the game, etc])
 but honestly I just need some way to interact with MC's internal data structures like position, world stuff, etc and both seem to have an almost identical API for that (from what I have briefly seen)
 Forge looks like it has better documentation and stuff and since this is my first MC mod, I'll just go with that I think
+
+Forge first impressions:
+Code snippets and stuff I see on forums and stuff online when searching up how to do stuff always seem to be outdated -- it seems the Forge API has changed quite a bit. But oh well, I'll figure it out (i'm not making a full blown mod and just need input control and stuff like that anyway).
+The `gradle runClient` thingy is great -- compilation time is really fast compared to Malmo (though loading up Minecraft itself still takes a while). If I run that thing with my IDE, looks like I can view the console output and all.
+`gradle runClient` seems to require internet to run though but whatever (otherwise will hang on "0% CONFIGURING")
+NB: decided to use Minecraft 1.15.1 -- simply because it's the latest one, bar the 1.16 Nether update one (cause idk much about the new Nether stuff). In fact, I haven't played MC in ages so I haven't kept up with all the new additions anyway but we'll see eh
