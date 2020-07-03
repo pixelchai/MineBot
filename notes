@@ -1,0 +1,19 @@
+Minecraft options:
+- MineRL -- though the action space needs to be extended (crafting, etc)
+- Malmo -- what MineRL is built on
+- Minecraft mod of some sort (most likely Forge)
+Other options which were discarded:
+- Recreate minecraft -- too many details to create (Ender dragon etc)
+- Analyse MC frame by frame -- although recreating the scene in 3D from screenshots and carrying out other related computer vision tasks would be interesting, it would likely end up becoming the focus of the project + taking up most of the time rather than beating the game. Maybe I could look into stuff like this as a separate project in the future
+
+Decision after trying out the above options:
+- MineRL: Uses malmo internally so probably would be better to use malmo directly rather than extending MineRL
+          + does some other weird stuff like resizing the screen
+          + builds every time like Malmo
+- Malmo: Don't really like the vibe -- with the whole XML + client/server thing
+         + rebuilds every time you wanna run (not necessarily major thing, I could probably make it not do this, but I cba'd figuring out how to)
+            - PS: this means each time you run you gotta wait 01m 15s just for building -- then you gotta wait for MC to launch on top of that
+         + uses Forge internally anyway
+         + more complicated setup (needs dev tools, whereas with Forge, can just distribute the mod jar file or whatever)
+         Though NB: using Forge would mean I gotta do it in Java whereas with Malmo I could use Python
+         Oh well let's try out some good ol Java
