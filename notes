@@ -29,3 +29,5 @@ Code snippets and stuff I see on forums and stuff online when searching up how t
 The `gradle runClient` thingy is great -- compilation time is really fast compared to Malmo (though loading up Minecraft itself still takes a while). If I run that thing with my IDE, looks like I can view the console output and all.
 `gradle runClient` seems to require internet to run though but whatever (otherwise will hang on "0% CONFIGURING")
 NB: decided to use Minecraft 1.15.1 -- simply because it's the latest one, bar the 1.16 Nether update one (cause idk much about the new Nether stuff). In fact, I haven't played MC in ages so I haven't kept up with all the new additions anyway but we'll see eh
+
+MC "Flat" spawn coords: 88 4 -183
