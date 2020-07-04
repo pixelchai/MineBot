@@ -1,13 +1,11 @@
 package com.pixelzerg.minebot.units;
 
+import com.pixelzerg.minebot.Unit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class RootUnit extends Unit {
     @SubscribeEvent

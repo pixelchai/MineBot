@@ -1,4 +1,4 @@
-package com.pixelzerg.minebot.units;
+package com.pixelzerg.minebot;
 
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;

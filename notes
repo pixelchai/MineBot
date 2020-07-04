@@ -112,3 +112,48 @@ def start:
 
     pollUnit.start()
     mainUnit.start()
+
+Just thought: may be simpler way of doing this -- just do a selector which finishes with FAIL immediately if any of the two children FAIL, but runs them both concurrently
+maybe this is similar 'Parallel' composite Node in Behaviour Trees is like
+
+def start:
+    mainUnit.onSuccess => self.finishedSuccessfully()
+    mainUnit.onFail => self.finishedFailed()
+    pollUnit.onFail => {
+        mainUnit.interrupt()
+    }
+
+Actually, decided against the above because: although it is similar to the 'Interrupter' structure as described above, it is not quite.
+Consider the return values for both.
+Interrupter: returns SUCCESS if mainUnit succeeded uninterrupted
+             returns FAIL if mainUnit failed or responseUnit failed
+             returns FAIL if responseUnit succeeded too (make sure it did run though) <-- NB remember this
+Alt: returns SUCCESS if mainUnit succeeded uninterrupted
+     returns FAIL if pollUnit raised alarm or if mainUnit failed
+
+Interrupter return value interpretation: cool we know if we need to try again or not
+Alt return value interpretation: if fail, EITHER mainUnit failed & we need to try again, or we need to begin attacking nearby mob (e.g). Unclear!
+
+Actually, I think there should be 3 finish states now: SUCCESS, FAILURE, INTERRUPTION
+in this case, actually alt would be better, as long as it behaved the following way:
+
+Alt: returns SUCCESS if mainUnit succeeded uninterrupted
+     returns FAILURE if mainUnit failed
+     returns INTERRUPTED if pollUnit raises alarm
+
+Summary of my AI structure:
+it's very event driven, but the sub-structures are *inspired* by Behaviour Trees
+it is intrinsically different because the tree should be propagated from the top very rarely (in fact, ideally, it should only be propagated from the top *once*)
+there is no RUNNING state -- and in fact, everything is async -- never synchronously wait for another Unit (instead, use events)
+address interruption using the constructs discussed above
+
+Side note: I feel like this models human behaviour process a bit better too.
+It's not like humans think Oh, I want to be a swag Mathematician, I want to get into a good uni, I want to do maths problems to study, I want to write on this paper every second
+No -- they're usually like.. right, I want to be a swag Mathematician, I want to get into a good uni, I want to do maths problems
+Then for a while, they just think: Right, I'm doing maths problems right now, I want to write on this paper (without thinking about the long term planning as much for a while)
+if that makes sense
+
+plus it makes sense from a computation overhead sort of way
+I have heard of 'Event-driven behaviour trees' so maybe this is already a thing, but I couldn't really find any resources about them.
+Well my idea is event driven and is (pretty much) a behaviour tree -- so I guess it is an event-driven behaviour tree :)
+In fact I could only just about find some decent _normal_ behaviour tree resources (yet an infinite amount of basic 'introduction' videos to GameEngine/Unity behaviour trees)
