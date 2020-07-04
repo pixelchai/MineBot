@@ -1,24 +1,30 @@
 package com.pixelzerg.minebot.units;
 
+import net.minecraftforge.common.MinecraftForge;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Unit {
-    private final HashMap<String, ArrayList<Runnable>> eventHooks = new HashMap<>();
+    public static final int EVENT_DONE = 0;
+    public static final int EVENT_STARTED = 1;
 
-    private void hookEvent(String eventName, Runnable callback){
-        ArrayList<Runnable> callbacks = eventHooks.getOrDefault(eventName, new ArrayList<>());
+    private final HashMap<Integer, ArrayList<Runnable>> eventHooks = new HashMap<>();
+
+    public Unit on(int eventCode, Runnable callback){
+        ArrayList<Runnable> callbacks = eventHooks.getOrDefault(eventCode, new ArrayList<>());
         callbacks.add(callback);
-        eventHooks.put(eventName, callbacks);
+        eventHooks.put(eventCode, callbacks);
+        return this;
     }
 
-    private void fireEvent(String eventName){
-        for (Runnable callback : eventHooks.getOrDefault(eventName, new ArrayList<>())){
+    private void fireEvent(int eventCode){
+        for (Runnable callback : eventHooks.getOrDefault(eventCode, new ArrayList<>())){
             callback.run();
         }
     }
 
-    public void tick(){
-
+    public void start(){
+        MinecraftForge.EVENT_BUS.register(this);
     }
 }
