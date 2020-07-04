@@ -65,6 +65,7 @@ Thinking more deeply about the structure of the AI. Discovered behaviour trees, 
 stuff about the 'running' state + how to do stuff which might take multiple ticks to do (walking towards a location)
 + more importantly, when doing an action which may take multiple ticks to do, how can you interrupt them if required
 What I've read so far have suggested: when you reach a leaf node that results in 'running', on the subsequent ticks, that leaf node is ticked again and so on until it eventually results in failure/success.
+>> "If it returns Running it will be reprocessed next tick, and again and again until it returns a Success or Failure" https://www.gamasutra.com/blogs/ChrisSimpson/20140717/221339/Behavior_trees_for_AI_How_they_work.php
 But what if there is a leaf node in 'running' but immediate action is required (mob nearby).
 Maybe you should tick the entire tree again, even while another process is running... but how would that work?
 Maybe two trees, one is like an 'interrupt' tree, and another is the normal tree ?? Again, what would this look like in practice and how would it function.
@@ -72,3 +73,8 @@ Need to solidify these edge cases
 That two tree idea seems like a shout though.
 Alternatively: maybe I could go with my idea from yesterday -- that idea has more continuity between ticks (whereas with behaviour trees, much of the tree is re-evaluated each tick)
 Maybe research some sort of parallel selector (behaviour trees)
+
+Interesting idea with stacks (pushing, popping, and variables): https://www.gamasutra.com/blogs/ChrisSimpson/20140717/221339/Behavior_trees_for_AI_How_they_work.php
+
+Or just have it so that when a node is running, it doesn't propgate right to the TOP of the tree, but it propagates to the top LAYER of the main tree, then only the top layer or so is run each tick
+-> can also just think of this as trees themselves nested
