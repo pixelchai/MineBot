@@ -157,3 +157,6 @@ plus it makes sense from a computation overhead sort of way
 I have heard of 'Event-driven behaviour trees' so maybe this is already a thing, but I couldn't really find any resources about them.
 Well my idea is event driven and is (pretty much) a behaviour tree -- so I guess it is an event-driven behaviour tree :)
 In fact I could only just about find some decent _normal_ behaviour tree resources (yet an infinite amount of basic 'introduction' videos to GameEngine/Unity behaviour trees)
+
+PS: could only find one implementation of Event-driven behaviour trees later, which was: https://github.com/meniku/NPBehave
+It seems similar that it doesn't have a 'running' state, but haven't looked at much else
