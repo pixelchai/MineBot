@@ -5,7 +5,7 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
 
-public class PlayerController {
+public class InputController {
     private static Minecraft mc;
 
     static {

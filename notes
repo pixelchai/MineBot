@@ -44,3 +44,19 @@ Parent units should be able to stop children units. E.g: behaviour planner unit 
 units should also all be able to access each other's details. E.g: any unit can find out: if a movement unit is active, movement target was ...
 Maybe there should be a wide bottom unit for movement (can only have a single bottom movement unit) / MovementPlanner unit
 Also: Units should be able to take parameters when starting them (e.g: movement target, type of block to find)
+
+Actually: maybe don't even need central bus -> events can just propagate upwards only (from children to parents) then parents could then push down as see fit
+
+
+Unit attributes:
+Methods:
+Start (with params)
+Events:
+Failed
+Done/Succeeded
+custom events: onMobDetected, whatever, ...
+Info:
+params, etc
+
+later (abstraction/helper methods):
+methods for internal use: Each Unit can be like do sub-units A, then B, then C (but more complex like FSM) but if break chain then do ...
