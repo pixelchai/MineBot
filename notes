@@ -31,3 +31,16 @@ The `gradle runClient` thingy is great -- compilation time is really fast compar
 NB: decided to use Minecraft 1.15.1 -- simply because it's the latest one, bar the 1.16 Nether update one (cause idk much about the new Nether stuff). In fact, I haven't played MC in ages so I haven't kept up with all the new additions anyway but we'll see eh
 
 MC "Flat" spawn coords: 88 4 -183
+
+Bot structure plan:
+Make an 'Unit' class. The bot's logic will consist of several different Units.
+E.g: a unit for gathering wood from trees
+Each unit may have different sub units too -- e.g: a Unit for locating a tree (walking around), another for breaking the blocks
+    at a very low level, maybe even a Unit that is simply to move towards a certain coordinate, or rotate some amount
+There will be a high level behaviour planner above everything which orchestrates which units to activate/deactivate and when (maybe this is also just a `Unit` as well of some sort (with sub-units, which make up everything else))
+NB: units for surveying as well - e.g: looking out for mobs, looking out for furnace finished, etc
+Important: the units should all be able to communicate to each other (send event messages to each other, onto a central event bus). E.g: looking out for mobs unit sends a message on the bus
+Parent units should be able to stop children units. E.g: behaviour planner unit should halt cutting tree if mob survey unit raises a warning
+units should also all be able to access each other's details. E.g: any unit can find out: if a movement unit is active, movement target was ...
+Maybe there should be a wide bottom unit for movement (can only have a single bottom movement unit) / MovementPlanner unit
+Also: Units should be able to take parameters when starting them (e.g: movement target, type of block to find)
