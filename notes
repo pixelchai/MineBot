@@ -78,3 +78,37 @@ Interesting idea with stacks (pushing, popping, and variables): https://www.gama
 
 Or just have it so that when a node is running, it doesn't propgate right to the TOP of the tree, but it propagates to the top LAYER of the main tree, then only the top layer or so is run each tick
 -> can also just think of this as trees themselves nested
+
+Idea: Selectors!
+Consider we want to make it so that Units A, B, C should be done one after each other (like 'Sequence' Composite Node in Behaviour Trees)
+We can simply just wire up the events like (pseudocode):
+
+def start:
+    A.onSuccess(()=> B.start())
+    A.onFail(()=> self.finishedFailed())
+    B.onSuccess(()=> C.start())
+    B.onFail(()=> self.finishedFailed())
+    C.onSuccess(()=>  self.finishedSuccessfully())
+    C.onFail(()=> self.finishedFailed())
+
+    A.start()
+
+    We can create a construct that automatically wires up the events like this for us, called a 'Selector'. In this case, a SequenceSelector/SequentialSelector
+
+Now, addressing interruptability, we can create a different Selector -- 'Interupter' (or whatever)
+Rather than taking a list of children Units, it takes a fixed amount of 3 -- and each are special. NB: example names -- think of better terminology later:
+pollUnit = unit to poll all the time. E.g: look out for Mobs -- finishes with FAILED if mobs otherwise finishes with SUCCESS
+mainUnit = unit that you do stuff on, but should interrupt if pollUnit finishes with FAILED
+responseUnit = unit that should start in response to pollUnit finishing with FAILED
+Now, 'Interrupter' would be like:
+
+def start:
+    mainUnit.onSuccess => self.finishedSuccessfully()
+    mainUnit.onFail => self.finishedFailed()
+    pollUnit.onFail => {
+        mainUnit.interrupt()
+        responseUnit.start()
+    }
+
+    pollUnit.start()
+    mainUnit.start()
