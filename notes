@@ -60,3 +60,15 @@ params, etc
 
 later (abstraction/helper methods):
 methods for internal use: Each Unit can be like do sub-units A, then B, then C (but more complex like FSM) but if break chain then do ...
+
+Thinking more deeply about the structure of the AI. Discovered behaviour trees, however, there are some parts I'm not really sure about
+stuff about the 'running' state + how to do stuff which might take multiple ticks to do (walking towards a location)
++ more importantly, when doing an action which may take multiple ticks to do, how can you interrupt them if required
+What I've read so far have suggested: when you reach a leaf node that results in 'running', on the subsequent ticks, that leaf node is ticked again and so on until it eventually results in failure/success.
+But what if there is a leaf node in 'running' but immediate action is required (mob nearby).
+Maybe you should tick the entire tree again, even while another process is running... but how would that work?
+Maybe two trees, one is like an 'interrupt' tree, and another is the normal tree ?? Again, what would this look like in practice and how would it function.
+Need to solidify these edge cases
+That two tree idea seems like a shout though.
+Alternatively: maybe I could go with my idea from yesterday -- that idea has more continuity between ticks (whereas with behaviour trees, much of the tree is re-evaluated each tick)
+Maybe research some sort of parallel selector (behaviour trees)
