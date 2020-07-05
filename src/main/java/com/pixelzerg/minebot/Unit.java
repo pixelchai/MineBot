@@ -3,7 +3,6 @@ package com.pixelzerg.minebot;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -22,7 +21,6 @@ public class Unit {
 
     private final HashMap<Integer, ArrayList<Runnable>> eventHooks = new HashMap<>();
 
-    @SuppressWarnings("Convert2MethodRef")
     public Unit(){
         // helper events hooking
         onFailure(() -> fireEvent(EVENT_UNSUCCESSFUL));
@@ -32,8 +30,8 @@ public class Unit {
         onSuccessful(() -> fireEvent(EVENT_DONE));
 
         // forge registering/unregistering
-        onStarted(() -> registerForge());
-        onDone(() -> unregisterForge());
+        onStarted(this::registerForge);
+        onDone(this::unregisterForge);
     }
 
     private void hookEvent(int eventCode, Runnable callback){
@@ -89,7 +87,7 @@ public class Unit {
         fireEvent(EVENT_SUCCESSFUL);
     }
 
-    protected void interrupt() {
+    public void interrupt() {
         fireEvent(EVENT_INTERRUPTED);
     }
 
