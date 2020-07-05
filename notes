@@ -160,3 +160,13 @@ In fact I could only just about find some decent _normal_ behaviour tree resourc
 
 PS: could only find one implementation of Event-driven behaviour trees later, which was: https://github.com/meniku/NPBehave
 It seems similar that it doesn't have a 'running' state, but haven't looked at much else
+
+
+NB: naming system change -- events are now adjectives:
+failure, successful, interrupted, unsuccessful
+reason: If I were to make them all nouns, "unsuccessful" doesn't really have a noun parallel that is distinct from "failure"
+NB: unsuccessful is a helper event: fires if finishes with either interrupted OR failure (i.e: logical NOT of successful)
+
+also another two helper events just cause I can:
+started -- fires right after the Unit is started
+done -- fires when
