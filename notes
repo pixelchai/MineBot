@@ -191,3 +191,14 @@ Python could in turn use that one visualisation library that I forgot the name o
 Actually maybe I could just have Java produce .dot file every frame and make a .dot viewer (which updates as file overwritten) - may not be feasible though (time to generate/render .dot graph may be too long to be realtime)
 
 Visualisation should be thought about later though. Functionality should come first
+
+Problem:
+InterruptPoller loop problem (see notebook)
+sol maybe: fix by clearing internal hooks onDone
+
+Problem:
+Parent
+    0 -> Child
+    2 -> Child.2
+Child:
+    2 -> Parent.2

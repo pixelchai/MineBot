@@ -30,8 +30,8 @@ public class Unit {
         onSuccessful(() -> fireEvent(EVENT_DONE));
 
         // forge registering/unregistering
-        onStarted(this::registerForge);
-        onDone(this::unregisterForge);
+        onStarted(this::register);
+        onDone(this::unregister);
     }
 
     private void hookEvent(int eventCode, Runnable callback){
@@ -96,12 +96,16 @@ public class Unit {
     }
     // endregion
 
-    private void registerForge(){
+    private void register(){
         MinecraftForge.EVENT_BUS.register(this);
         LOGGER.debug("Unit: Started "+this.getClass().getSimpleName());
     }
 
-    private void unregisterForge(){
+    private void unregister(){
+        // clear internal hooks
+        eventHooks.clear();
+
+        // unregister from Forge
         MinecraftForge.EVENT_BUS.unregister(this);
         LOGGER.debug("Unit: Done "+this.getClass().getName());
     }

@@ -27,6 +27,7 @@ public class InterruptPoller extends Selector {
 
     @Override
     protected void interruptChildren() {
-
+        pollUnit.interrupt();
+        mainUnit.interrupt();
     }
 }
