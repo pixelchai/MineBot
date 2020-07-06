@@ -172,6 +172,8 @@ started -- fires right after the Unit is started
 done -- fires when
 
 NB: Sequence: don't need to hook children's onInterrupted -> this::interrupt because calling seq.interrupt() will fire interrupt event anyway
+Wait? but what if a child is interrupted?... and wants to propagate the interrupt upwards
+Ok well I guess if child interrupted => fail Seq. Or just child.onUnsuccessful -> fail self
 
 Planned out alt notation for AI structure -- see notebook!
 Make a Utils static class (kind of like logger) to genrate debug overlay diagrams for this
@@ -180,3 +182,12 @@ overlay.log(something happened)
 Then overlay is just like a game loop:
 overlay.update() // update graphics
 overlay.render(Screen screen) // render to screen (or whatever)
+
+actually may be easier to have a method: Unit.toJson() or something which recursively generates a Json for the graph
+then call .toJson on root Unit, export this to a file, alongside a log of which ones are firing
+and outsource debug visuals to a separate program (Python or whatever)
+Python could in turn use that one visualisation library that I forgot the name of (Remembered: graphviz. Could produce .dot file)
++ then visuals would be in separate window too, rather than overlay (could be useful if want to zoom in, etc, esp for larger trees)
+Actually maybe I could just have Java produce .dot file every frame and make a .dot viewer (which updates as file overwritten) - may not be feasible though (time to generate/render .dot graph may be too long to be realtime)
+
+Visualisation should be thought about later though. Functionality should come first

@@ -13,7 +13,7 @@ public class Sequence extends Selector {
             final int childIndex = i;
             this.childrenUnits[i].onSuccessful(() -> this.childrenUnits[childIndex+1].start());
 
-            this.childrenUnits[i].onFailure(this::fail); // if any child fails, Sequence fails
+            this.childrenUnits[i].onUnsuccessful(this::fail); // if any child is unsuccessful, Sequence fails
         }
 
         // the last child Unit succeeded => the sequence as a whole succeeded
