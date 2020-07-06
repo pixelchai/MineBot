@@ -12,6 +12,8 @@ public class Sequence extends Selector {
         for(int i = 0; i < childrenUnits.length - 1; i++){
             final int childIndex = i;
             this.childrenUnits[i].onSuccessful(() -> this.childrenUnits[childIndex+1].start());
+
+            this.childrenUnits[i].onFailure(this::fail); // if any child fails, Sequence fails
         }
 
         // the last child Unit succeeded => the sequence as a whole succeeded
@@ -26,6 +28,7 @@ public class Sequence extends Selector {
 
     @Override
     protected void interruptChildren() {
+        // interrupt all children
         for(Unit childUnit : this.childrenUnits){
             childUnit.interrupt();
         }

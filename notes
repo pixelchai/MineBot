@@ -170,3 +170,13 @@ NB: unsuccessful is a helper event: fires if finishes with either interrupted OR
 also another two helper events just cause I can:
 started -- fires right after the Unit is started
 done -- fires when
+
+NB: Sequence: don't need to hook children's onInterrupted -> this::interrupt because calling seq.interrupt() will fire interrupt event anyway
+
+Planned out alt notation for AI structure -- see notebook!
+Make a Utils static class (kind of like logger) to genrate debug overlay diagrams for this
+overlay.log(something happened)
+
+Then overlay is just like a game loop:
+overlay.update() // update graphics
+overlay.render(Screen screen) // render to screen (or whatever)
