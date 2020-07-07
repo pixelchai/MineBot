@@ -9,7 +9,7 @@ public class UntilUnsuccessful extends Unit {
         this.childUnit = childUnit;
 
         this.onStarted(this.childUnit::start);
-        this.childUnit.onSuccessful(this.childUnit::start);
+        this.childUnit.onSuccessful(this::start);
         this.childUnit.onFailure(this::fail);
         this.childUnit.onInterrupted(this::interrupt);
         this.onInterrupted(this.childUnit::interrupt);
