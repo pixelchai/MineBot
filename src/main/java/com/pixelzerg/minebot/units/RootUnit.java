@@ -1,6 +1,9 @@
 package com.pixelzerg.minebot.units;
 
 import com.pixelzerg.minebot.Unit;
+import com.pixelzerg.minebot.nodes.Not;
+import com.pixelzerg.minebot.nodes.ParallelNode;
+import com.pixelzerg.minebot.nodes.UntilUnsuccessful;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.util.math.Vec3i;
@@ -16,8 +19,15 @@ public class RootUnit extends Unit {
         if (player != null) {
             String msg = event.getMessage().getString();
             if (msg.contentEquals("<" + player.getDisplayName().getString() + "> start")) {
-                new MoveToUnit(player.getPosition().add(new Vec3i(10, 0, 0))).start();
+                getTree().start();
             }
         }
+    }
+
+    private Unit getTree(){
+        return new ParallelNode(
+                new UntilUnsuccessful(new Not(new WoolDetectorUnit())),
+                new UntilUnsuccessful(new JumpUnit())
+        );
     }
 }
