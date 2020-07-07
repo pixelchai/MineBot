@@ -1,4 +1,4 @@
-package com.pixelzerg.minebot.selectors;
+package com.pixelzerg.minebot.nodes;
 
 import com.pixelzerg.minebot.Unit;
 

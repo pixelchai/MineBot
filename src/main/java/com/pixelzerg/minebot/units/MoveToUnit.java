@@ -18,6 +18,6 @@ public class MoveToUnit extends Unit {
 
     @SubscribeEvent
     public void onTickEvent(TickEvent event){
-        LOGGER.info("tiCK!!");
+//        LOGGER.info("tiCK!!");
     }
 }

@@ -202,3 +202,7 @@ Parent
     2 -> Child.2
 Child:
     2 -> Parent.2
+
+move childrenUnits into Unit base class
+and use setChildren() to add to it instead
+SingularUnit subclass on top of this which only allows for one child
