@@ -9,18 +9,28 @@ import java.util.HashMap;
 public class Unit {
     protected static final Logger LOGGER = LogManager.getLogger();
 
-    private enum Event {
+    public enum Event {
         // events
-        FAILURE,
-        SUCCESSFUL,
-        INTERRUPTED,
-        STARTED,
+        FAIL,
+        SUCCESS,
+        INTERRUPT,
+        START,
     }
 
     private final HashMap<Event, ArrayList<Runnable>> topCallbacks = new HashMap<>();
     private final HashMap<Event, ArrayList<Runnable>> bottomCallbacks = new HashMap<>();
 
     public Unit(){
+        this.hookBottom(Event.START, this::register);
+
+        this.hookTop(new Event[]{Event.SUCCESS, Event.FAIL, Event.INTERRUPT}, () -> {
+            topCallbacks.clear();
+            this.unregister();
+        });
+        this.hookBottom(new Event[]{Event.SUCCESS, Event.FAIL, Event.INTERRUPT}, () -> {
+            bottomCallbacks.clear();
+            this.unregister();
+        });
     }
 
     private String getDebugPrefix(){
@@ -36,7 +46,7 @@ public class Unit {
     }
 
     public void fireUp(Event event){
-        if (event == Event.STARTED){
+        if (event == Event.START){
             LOGGER.warn(this.getDebugPrefix() + "Firing Event.STARTED in an invalid direction!");
         }
         LOGGER.debug(this.getDebugPrefix() + "Firing up: " + event);
@@ -47,17 +57,45 @@ public class Unit {
     }
 
     public void hookBottom(Event event, Runnable callback){
-        ArrayList<Runnable> callbacks = bottomCallbacks.getOrDefault(event, new ArrayList<>());
-        callbacks.add(callback);
-        bottomCallbacks.put(event, callbacks);
+        hookBottom(new Event[]{event}, callback);
     }
 
     public void hookTop(Event event, Runnable callback){
-        if (event == Event.STARTED){
-            LOGGER.warn(this.getDebugPrefix() + "Hooking Event.STARTED in an invalid direction!");
+        hookTop(new Event[]{event}, callback);
+    }
+
+    public void hookBottom(Event[] events, Runnable callback){
+        for (Event event : events){
+            ArrayList<Runnable> callbacks = bottomCallbacks.getOrDefault(event, new ArrayList<>());
+            callbacks.add(callback);
+            bottomCallbacks.put(event, callbacks);
         }
-        ArrayList<Runnable> callbacks = topCallbacks.getOrDefault(event, new ArrayList<>());
-        callbacks.add(callback);
-        topCallbacks.put(event, callbacks);
+    }
+
+    public void hookTop(Event[] events, Runnable callback){
+        for (Event event : events) {
+            if (event == Event.START) {
+                LOGGER.warn(this.getDebugPrefix() + "Hooking Event.STARTED in an invalid direction!");
+            }
+            ArrayList<Runnable> callbacks = topCallbacks.getOrDefault(event, new ArrayList<>());
+            callbacks.add(callback);
+            topCallbacks.put(event, callbacks);
+        }
+    }
+
+    public void start(){
+        this.fireDown(Event.START);
+    }
+
+    private void register(){
+        // register Forge
+        MinecraftForge.EVENT_BUS.register(this);
+        LOGGER.debug(this.getDebugPrefix() + "Registered");
+    }
+
+    private void unregister(){
+        // unregister from Forge
+        MinecraftForge.EVENT_BUS.unregister(this);
+        LOGGER.debug(this.getDebugPrefix() + "Unregistered");
     }
 }

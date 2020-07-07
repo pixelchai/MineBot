@@ -10,26 +10,34 @@ public class ParallelNode extends Unit {
     public ParallelNode(Unit... childrenUnits){
         this.childrenUnits = childrenUnits;
 
-        this.onStarted(() -> {
+        this.hookBottom(Event.START, () -> {
            for(Unit childUnit : childrenUnits){
                childUnit.start();
            }
         });
 
         for(Unit childUnit : childrenUnits){
-            childUnit.onUnsuccessful(this::fail);
-            childUnit.onSuccessful(() -> {
+            childUnit.hookTop(new Event[]{Event.FAIL, Event.INTERRUPT}, () ->
+                    this.fireUp(Event.FAIL));
+
+            childUnit.hookTop(Event.SUCCESS, () -> {
                 numSucceeded++;
 
                 if (numSucceeded >= childrenUnits.length){
-                    this.succeed();
+                    this.fireUp(Event.SUCCESS);
                 }
             });
         }
 
-        this.onDone(() -> {
+        this.hookTop(new Event[]{Event.SUCCESS, Event.FAIL, Event.INTERRUPT}, () -> {
             for(Unit childUnit : childrenUnits){
-                childUnit.interrupt();
+                childUnit.fireDown(Event.INTERRUPT);
+            }
+        });
+
+        this.hookBottom(Event.INTERRUPT, () -> {
+            for(Unit childUnit : childrenUnits){
+                childUnit.fireDown(Event.INTERRUPT);
             }
         });
     }
