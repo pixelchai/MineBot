@@ -25,6 +25,7 @@ public class InputController {
 //    }
 
     public static void set(PlayerControl control, boolean held){
+        Minecraft mc = Minecraft.getInstance();
         InputMappings.Input input = null;
         switch (control){
             case FORWARD:
