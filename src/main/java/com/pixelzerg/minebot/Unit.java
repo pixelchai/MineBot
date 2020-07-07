@@ -9,17 +9,19 @@ import java.util.HashMap;
 public class Unit {
     protected static final Logger LOGGER = LogManager.getLogger();
 
-    // events
-    private static final int EVENT_FAILURE = 0;
-    private static final int EVENT_SUCCESSFUL = 1;
-    private static final int EVENT_INTERRUPTED = 2;
+    private enum Event {
+        // events
+        FAILURE,
+        SUCCESSFUL,
+        INTERRUPTED,
 
-    // helper events
-    private static final int EVENT_UNSUCCESSFUL = 3; // = failure OR interrupted
-    private static final int EVENT_DONE = 4; // = failure OR interrupted OR successful
-    private static final int EVENT_STARTED = 5;
+        // helper events
+        UNSUCCESSFUL, // = failure OR interrupted
+        DONE, // = failure OR interrupted OR successful
+        STARTED,
+    }
 
-    private final HashMap<Integer, ArrayList<Runnable>> eventHooks = new HashMap<>();
+    private final HashMap<Event, ArrayList<Runnable>> eventHooks = new HashMap<>();
 
     public Unit(){
         // helper events hooking
@@ -31,73 +33,73 @@ public class Unit {
     }
 
     private void initInternalHooks(){
-        onFailure(() -> fireEvent(EVENT_UNSUCCESSFUL));
-        onInterrupted(() -> fireEvent(EVENT_UNSUCCESSFUL));
+        onFailure(() -> fireEvent(Event.UNSUCCESSFUL));
+        onInterrupted(() -> fireEvent(Event.UNSUCCESSFUL));
 
-        onUnsuccessful(() -> fireEvent(EVENT_DONE));
-        onSuccessful(() -> fireEvent(EVENT_DONE));
+        onUnsuccessful(() -> fireEvent(Event.DONE));
+        onSuccessful(() -> fireEvent(Event.DONE));
     }
 
-    private void hookEvent(int eventCode, Runnable callback){
-        ArrayList<Runnable> callbacks = eventHooks.getOrDefault(eventCode, new ArrayList<>());
+    private void hookEvent(Event event, Runnable callback){
+        ArrayList<Runnable> callbacks = eventHooks.getOrDefault(event, new ArrayList<>());
         callbacks.add(callback);
-        eventHooks.put(eventCode, callbacks);
+        eventHooks.put(event, callbacks);
     }
 
-    private void fireEvent(int eventCode){
-        LOGGER.debug("Unit: "+this.getClass().getSimpleName()+ ": Firing: " + eventCode);
-        for (Runnable callback : eventHooks.getOrDefault(eventCode, new ArrayList<>())){
+    private void fireEvent(Event event){
+        LOGGER.debug("Unit: "+this.getClass().getSimpleName()+ ": Firing: " + event);
+        for (Runnable callback : eventHooks.getOrDefault(event, new ArrayList<>())){
             callback.run();
         }
     }
 
     // region event hooking methods
     public Unit onFailure(Runnable callback){
-        hookEvent(EVENT_FAILURE, callback);
+        hookEvent(Event.FAILURE, callback);
         return this;
     }
 
     public Unit onSuccessful(Runnable callback){
-        hookEvent(EVENT_SUCCESSFUL, callback);
+        hookEvent(Event.SUCCESSFUL, callback);
         return this;
     }
 
     public Unit onInterrupted(Runnable callback){
-        hookEvent(EVENT_INTERRUPTED, callback);
+        hookEvent(Event.INTERRUPTED, callback);
         return this;
     }
 
     public Unit onUnsuccessful(Runnable callback){
-        hookEvent(EVENT_UNSUCCESSFUL, callback);
+        hookEvent(Event.UNSUCCESSFUL, callback);
         return this;
     }
 
     public Unit onDone(Runnable callback){
-        hookEvent(EVENT_DONE, callback);
+        hookEvent(Event.DONE, callback);
         return this;
     }
 
     public Unit onStarted(Runnable callback){
-        hookEvent(EVENT_STARTED, callback);
+        hookEvent(Event.STARTED, callback);
         return this;
     }
     // endregion
 
     // region event firing methods
     protected void fail(){
-        fireEvent(EVENT_FAILURE);
+        fireEvent(Event.FAILURE);
     }
 
     protected void succeed(){
-        fireEvent(EVENT_SUCCESSFUL);
+        fireEvent(Event.SUCCESSFUL);
     }
 
     public void interrupt() {
-        fireEvent(EVENT_INTERRUPTED);
+        fireEvent(Event.INTERRUPTED);
     }
 
     public void start(){
-        fireEvent(EVENT_STARTED);
+        fireEvent(Event.STARTED);
     }
     // endregion
 
