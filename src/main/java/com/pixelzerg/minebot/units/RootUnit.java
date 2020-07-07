@@ -26,8 +26,8 @@ public class RootUnit extends Unit {
 
     private Unit getTree(){
         return new ParallelNode(
-                new UntilUnsuccessful(new Not(new WoolDetectorUnit())),
-                new UntilUnsuccessful(new JumpUnit())
+                new UntilUnsuccessful(new WoolDetectorUnit())
+//                new UntilUnsuccessful(new JumpUnit())
         );
     }
 }
