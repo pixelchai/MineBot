@@ -24,11 +24,14 @@ public class Unit {
         this.hookBottom(Event.START, this::register);
 
         this.hookTop(new Event[]{Event.SUCCESS, Event.FAIL, Event.INTERRUPT}, () -> {
-            topCallbacks.clear();
+//            topCallbacks.put(Event.SUCCESS, new ArrayList<>());
+//            topCallbacks.put(Event.FAIL, new ArrayList<>());
             this.unregister();
         });
-        this.hookBottom(new Event[]{Event.SUCCESS, Event.FAIL, Event.INTERRUPT}, () -> {
-            bottomCallbacks.clear();
+        this.hookBottom(new Event[]{/*Event.SUCCESS, Event.FAIL, */Event.INTERRUPT}, () -> {
+            // clear all bottomCallbacks
+            // => once this Unit is finished, it will ignore any signals coming from below it
+//            bottomCallbacks.clear();
             this.unregister();
         });
     }
@@ -38,7 +41,7 @@ public class Unit {
     }
 
     public void fireDown(Event event){
-        LOGGER.debug(this.getDebugPrefix() + "Firing down: " + event);
+        LOGGER.debug(this.getDebugPrefix() + "Fired down: " + event);
 
         for (Runnable callback : bottomCallbacks.getOrDefault(event, new ArrayList<>())){
             callback.run();
@@ -47,9 +50,9 @@ public class Unit {
 
     public void fireUp(Event event){
         if (event == Event.START){
-            LOGGER.warn(this.getDebugPrefix() + "Firing Event.STARTED in an invalid direction!");
+            LOGGER.warn(this.getDebugPrefix() + "Fired Event.STARTED in an invalid direction!");
         }
-        LOGGER.debug(this.getDebugPrefix() + "Firing up: " + event);
+        LOGGER.debug(this.getDebugPrefix() + "Fired up: " + event);
 
         for (Runnable callback : topCallbacks.getOrDefault(event, new ArrayList<>())){
             callback.run();

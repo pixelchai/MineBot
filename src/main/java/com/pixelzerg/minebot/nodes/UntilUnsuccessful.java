@@ -16,6 +16,7 @@ public class UntilUnsuccessful extends Unit {
         this.childUnit.hookTop(new Event[]{Event.FAIL, Event.INTERRUPT}, () -> {
             this.running = false;
             this.fireUp(Event.FAIL);
+            this.fireDown(Event.INTERRUPT);//switch
         });
         this.childUnit.hookTop(Event.SUCCESS, () -> {
             if(this.running) {
