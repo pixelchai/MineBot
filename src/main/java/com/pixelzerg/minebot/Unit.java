@@ -23,15 +23,19 @@ public class Unit {
 
     public Unit(){
         // helper events hooking
+        initInternalHooks();
+
+        // registering/unregistering
+        onStarted(this::register);
+        onDone(this::unregister);
+    }
+
+    private void initInternalHooks(){
         onFailure(() -> fireEvent(EVENT_UNSUCCESSFUL));
         onInterrupted(() -> fireEvent(EVENT_UNSUCCESSFUL));
 
         onUnsuccessful(() -> fireEvent(EVENT_DONE));
         onSuccessful(() -> fireEvent(EVENT_DONE));
-
-        // forge registering/unregistering
-        onStarted(this::register);
-        onDone(this::unregister);
     }
 
     private void hookEvent(int eventCode, Runnable callback){
@@ -98,15 +102,16 @@ public class Unit {
 
     private void register(){
         MinecraftForge.EVENT_BUS.register(this);
-        LOGGER.debug("Unit: Started "+this.getClass().getSimpleName());
+        LOGGER.debug("Unit: Registered "+this.getClass().getSimpleName());
     }
 
     private void unregister(){
-        // clear internal hooks
+        // reset internal hooks
         eventHooks.clear();
+        initInternalHooks();
 
         // unregister from Forge
         MinecraftForge.EVENT_BUS.unregister(this);
-        LOGGER.debug("Unit: Done "+this.getClass().getName());
+        LOGGER.debug("Unit: Unregistered "+this.getClass().getName());
     }
 }
