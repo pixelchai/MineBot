@@ -24,14 +24,9 @@ public class Unit {
         this.hookBottom(Event.START, this::register);
 
         this.hookTop(new Event[]{Event.SUCCESS, Event.FAIL, Event.INTERRUPT}, () -> {
-//            topCallbacks.put(Event.SUCCESS, new ArrayList<>());
-//            topCallbacks.put(Event.FAIL, new ArrayList<>());
-            this.unregister();
-        });
-        this.hookBottom(new Event[]{/*Event.SUCCESS, Event.FAIL, */Event.INTERRUPT}, () -> {
-            // clear all bottomCallbacks
-            // => once this Unit is finished, it will ignore any signals coming from below it
-//            bottomCallbacks.clear();
+            // this Unit finished => unhook all signals coming from below, apart from Interrupt
+            bottomCallbacks.put(Event.SUCCESS, new ArrayList<>());
+            bottomCallbacks.put(Event.FAIL, new ArrayList<>());
             this.unregister();
         });
     }
