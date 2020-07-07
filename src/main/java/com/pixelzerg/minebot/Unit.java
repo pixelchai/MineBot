@@ -45,6 +45,7 @@ public class Unit {
     }
 
     private void fireEvent(int eventCode){
+        LOGGER.debug("Unit: "+this.getClass().getSimpleName()+ ": Firing: " + eventCode);
         for (Runnable callback : eventHooks.getOrDefault(eventCode, new ArrayList<>())){
             callback.run();
         }
@@ -106,9 +107,9 @@ public class Unit {
     }
 
     private void unregister(){
-        // reset internal hooks
-        eventHooks.clear();
-        initInternalHooks();
+//        // reset internal hooks
+//        eventHooks.clear();
+//        initInternalHooks();
 
         // unregister from Forge
         MinecraftForge.EVENT_BUS.unregister(this);

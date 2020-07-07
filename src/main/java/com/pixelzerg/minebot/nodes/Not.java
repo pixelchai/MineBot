@@ -12,5 +12,6 @@ public class Not extends Unit {
         this.childUnit.onSuccessful(this::fail);
         this.childUnit.onFailure(this::succeed);
         this.childUnit.onInterrupted(this::interrupt);
+        this.onInterrupted(this.childUnit::interrupt);
     }
 }

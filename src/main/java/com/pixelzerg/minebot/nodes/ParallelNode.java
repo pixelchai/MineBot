@@ -26,5 +26,11 @@ public class ParallelNode extends Unit {
                 }
             });
         }
+
+        this.onDone(() -> {
+            for(Unit childUnit : childrenUnits){
+                childUnit.interrupt();
+            }
+        });
     }
 }
