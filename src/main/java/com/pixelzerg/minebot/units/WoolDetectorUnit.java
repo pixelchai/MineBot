@@ -25,18 +25,14 @@ public class WoolDetectorUnit extends Unit {
         return false;
     }
 
-//    public WoolDetectorUnit(){
-//        this.onS
-//    }
-
     @SubscribeEvent
     public void onTickEvent(TickEvent event){
         Minecraft mc = Minecraft.getInstance();
         ClientPlayerEntity player = mc.player;
         if(isBlockInRange(mc.world, Blocks.RED_WOOL, player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ(), 20)){
-            this.succeed();
+            this.fireUp(Event.SUCCESS);
         } else {
-            this.fail();
+            this.fireUp(Event.FAIL);
         }
     }
 }

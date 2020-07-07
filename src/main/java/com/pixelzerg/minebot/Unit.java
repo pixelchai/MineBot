@@ -9,112 +9,92 @@ import java.util.HashMap;
 public class Unit {
     protected static final Logger LOGGER = LogManager.getLogger();
 
-    private enum Event {
+    public enum Event {
         // events
-        FAILURE,
-        SUCCESSFUL,
-        INTERRUPTED,
-
-        // helper events
-        UNSUCCESSFUL, // = failure OR interrupted
-        DONE, // = failure OR interrupted OR successful
-        STARTED,
+        FAIL,
+        SUCCESS,
+        INTERRUPT,
+        START,
     }
 
-    private final HashMap<Event, ArrayList<Runnable>> eventHooks = new HashMap<>();
+    private final HashMap<Event, ArrayList<Runnable>> topCallbacks = new HashMap<>();
+    private final HashMap<Event, ArrayList<Runnable>> bottomCallbacks = new HashMap<>();
 
     public Unit(){
-        // helper events hooking
-        initInternalHooks();
+        this.hookBottom(Event.START, this::register);
 
-        // registering/unregistering
-        onStarted(this::register);
-        onDone(this::unregister);
+        this.hookTop(new Event[]{Event.SUCCESS, Event.FAIL, Event.INTERRUPT}, () -> {
+            // this Unit finished (this.fireUp(SUCCESS)/whatever called)
+            // => unhook all signals coming from below (ignore .fireUp(whatever)) apart from Interrupt
+            bottomCallbacks.put(Event.SUCCESS, new ArrayList<>());
+            bottomCallbacks.put(Event.FAIL, new ArrayList<>());
+            this.unregister();
+        });
     }
 
-    private void initInternalHooks(){
-        onFailure(() -> fireEvent(Event.UNSUCCESSFUL));
-        onInterrupted(() -> fireEvent(Event.UNSUCCESSFUL));
-
-        onUnsuccessful(() -> fireEvent(Event.DONE));
-        onSuccessful(() -> fireEvent(Event.DONE));
+    private String getDebugPrefix(){
+        return "Unit " + this.getClass().getSimpleName() + ": ";
     }
 
-    private void hookEvent(Event event, Runnable callback){
-        ArrayList<Runnable> callbacks = eventHooks.getOrDefault(event, new ArrayList<>());
-        callbacks.add(callback);
-        eventHooks.put(event, callbacks);
-    }
+    public void fireDown(Event event){
+        LOGGER.debug(this.getDebugPrefix() + "Fired down: " + event);
 
-    private void fireEvent(Event event){
-        LOGGER.debug("Unit: "+this.getClass().getSimpleName()+ ": Firing: " + event);
-        for (Runnable callback : eventHooks.getOrDefault(event, new ArrayList<>())){
+        for (Runnable callback : bottomCallbacks.getOrDefault(event, new ArrayList<>())){
             callback.run();
         }
     }
 
-    // region event hooking methods
-    public Unit onFailure(Runnable callback){
-        hookEvent(Event.FAILURE, callback);
-        return this;
+    public void fireUp(Event event){
+        if (event == Event.START){
+            LOGGER.warn(this.getDebugPrefix() + "Fired Event.STARTED in an invalid direction!");
+        }
+        LOGGER.debug(this.getDebugPrefix() + "Fired up: " + event);
+
+        for (Runnable callback : topCallbacks.getOrDefault(event, new ArrayList<>())){
+            callback.run();
+        }
     }
 
-    public Unit onSuccessful(Runnable callback){
-        hookEvent(Event.SUCCESSFUL, callback);
-        return this;
+    public void hookBottom(Event event, Runnable callback){
+        hookBottom(new Event[]{event}, callback);
     }
 
-    public Unit onInterrupted(Runnable callback){
-        hookEvent(Event.INTERRUPTED, callback);
-        return this;
+    public void hookTop(Event event, Runnable callback){
+        hookTop(new Event[]{event}, callback);
     }
 
-    public Unit onUnsuccessful(Runnable callback){
-        hookEvent(Event.UNSUCCESSFUL, callback);
-        return this;
+    public void hookBottom(Event[] events, Runnable callback){
+        for (Event event : events){
+            ArrayList<Runnable> callbacks = bottomCallbacks.getOrDefault(event, new ArrayList<>());
+            callbacks.add(callback);
+            bottomCallbacks.put(event, callbacks);
+        }
     }
 
-    public Unit onDone(Runnable callback){
-        hookEvent(Event.DONE, callback);
-        return this;
-    }
-
-    public Unit onStarted(Runnable callback){
-        hookEvent(Event.STARTED, callback);
-        return this;
-    }
-    // endregion
-
-    // region event firing methods
-    protected void fail(){
-        fireEvent(Event.FAILURE);
-    }
-
-    protected void succeed(){
-        fireEvent(Event.SUCCESSFUL);
-    }
-
-    public void interrupt() {
-        fireEvent(Event.INTERRUPTED);
+    public void hookTop(Event[] events, Runnable callback){
+        for (Event event : events) {
+            if (event == Event.START) {
+                LOGGER.warn(this.getDebugPrefix() + "Hooking Event.STARTED in an invalid direction!");
+            }
+            ArrayList<Runnable> callbacks = topCallbacks.getOrDefault(event, new ArrayList<>());
+            callbacks.add(callback);
+            topCallbacks.put(event, callbacks);
+        }
     }
 
     public void start(){
-        fireEvent(Event.STARTED);
+        this.fireDown(Event.START);
     }
-    // endregion
 
     private void register(){
+        // register Forge
         MinecraftForge.EVENT_BUS.register(this);
-        LOGGER.debug("Unit: Registered "+this.getClass().getSimpleName());
+        LOGGER.debug(this.getDebugPrefix() + "Registered");
     }
 
     private void unregister(){
-//        // reset internal hooks
-//        eventHooks.clear();
-//        initInternalHooks();
-
         // unregister from Forge
         MinecraftForge.EVENT_BUS.unregister(this);
-        LOGGER.debug("Unit: Unregistered "+this.getClass().getName());
+        LOGGER.debug(this.getDebugPrefix() + "Unregistered");
     }
 }
