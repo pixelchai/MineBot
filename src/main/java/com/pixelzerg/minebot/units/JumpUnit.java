@@ -16,8 +16,13 @@ public class JumpUnit extends Unit {
     public void onTickEvent(TickEvent event) {
         if (elapsedTicks <= 0){
             InputController.set(PlayerControl.JUMP, true);
-        } else if (elapsedTicks >= 20){
+            LOGGER.info("JUMP KEYDOWN");
+        } else if (elapsedTicks == 10){
             InputController.set(PlayerControl.JUMP, false);
+            LOGGER.info("JUMP KEYUP");
+        } else if (elapsedTicks >= 40){
+            LOGGER.info("JUMP DONE");
+            elapsedTicks = 0;
             this.succeed();
         }
         elapsedTicks++;
