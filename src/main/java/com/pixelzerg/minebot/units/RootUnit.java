@@ -22,6 +22,8 @@ public class RootUnit extends Unit {
             String msg = event.getMessage().getString();
             if (msg.contentEquals("<" + player.getDisplayName().getString() + "> start")) {
 //                getTree().start();
+                BaritoneAPI.getSettings().allowSprint.value = true;
+                BaritoneAPI.getSettings().primaryTimeoutMS.value = 2000L;
                 IBaritone ba = BaritoneAPI.getProvider().getPrimaryBaritone();
                 ba.getCustomGoalProcess().setGoalAndPath(new GoalXZ(0, 50));
             }

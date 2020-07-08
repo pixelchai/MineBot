@@ -114,7 +114,8 @@ dependencies {
 
     // These dependencies get remapped to your current MCP mappings
     // deobf 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-    implementation name: 'baritone-unoptimized-forge-1.5.3'
+//    fg.deobf('baritone-unoptimized-forge:1.5.3')
+    compile fg.deobf('ignored:baritone-unoptimized-forge:1.5.3')
 
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
