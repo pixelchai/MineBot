@@ -1,5 +1,8 @@
 package com.pixelzerg.minebot.units;
 
+import baritone.api.BaritoneAPI;
+import baritone.api.IBaritone;
+import baritone.api.pathing.goals.GoalXZ;
 import com.pixelzerg.minebot.Unit;
 import com.pixelzerg.minebot.nodes.NotNode;
 import com.pixelzerg.minebot.nodes.ParallelNode;
@@ -18,7 +21,9 @@ public class RootUnit extends Unit {
         if (player != null) {
             String msg = event.getMessage().getString();
             if (msg.contentEquals("<" + player.getDisplayName().getString() + "> start")) {
-                getTree().start();
+//                getTree().start();
+                IBaritone ba = BaritoneAPI.getProvider().getPrimaryBaritone();
+                ba.getCustomGoalProcess().setGoalAndPath(new GoalXZ(0, 50));
             }
         }
     }
